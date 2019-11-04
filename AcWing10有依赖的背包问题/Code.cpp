@@ -36,20 +36,23 @@ void ADD(int from, int to) {
 	head[from] = cnt;
 }
 void dfs(int now) {
+	f[now][0] = 0;
 	for(int i = head[now]; i; i = t[i].nxt) {
 		int to = t[i].to;
 		dfs(to);
-		for(int j = m - w[now]; j >= 0; --j)
+		for(int j = m; j >= 0; --j)
 			for(int k = j; k >= 0; --k)
 				if(j - k >= 0)
 					f[now][j] = std :: max(f[now][j], f[now][j - k] + f[to][k]);
 	}
-	for(int i = m; i >= w[now]; --i)
+	if(now)
+		for(int i = m; i >= w[now]; --i)
 			f[now][i] = f[now][i - w[now]] + v[now];
 	for(int i = 0; i < w[now]; ++i)
 		f[now][i] = 0;
 }
 int main() {
+	memset(f, 0xcf, sizeof(f));
 	n = sc(), m = sc();
 	for(int i = 1; i <= n; ++i) {
 		int x = sc(), y = sc(), z = sc();
@@ -57,9 +60,9 @@ int main() {
 		if(z != -1)
 			ADD(z, i);
 		else
-			rt = i;
+			rt = i, ADD(0, i);
 	}
-	dfs(rt);
-	printf("%d\n", f[rt][m]);
+	dfs(0);
+	printf("%d\n", f[0][m]);
 	return 0;
 }
